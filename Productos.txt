@@ -1,0 +1,8 @@
+B1,Medicamentos,Analgesicos,1500,1
+B2,CuidadoPersonal,Shampoo,1200,2
+B1,Medicamentos,Analgésicos,1500,3
+B1,CuidadoPersonal,Crema_Hidratante,3500,4
+B2,Medicamentos,Analgésicos,1500,5
+
+
+Bodega,NombreCategoria,NombreSubCategoria,Precio,Id

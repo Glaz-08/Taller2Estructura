@@ -1,0 +1,6 @@
+juan,20,Normal,1
+martin,63,Preferencial,Tercera edad,2
+luisa,24,Preferencial,Embarazada,3
+pedro,25,Preferencial,Discapacidad,4
+
+Nombre,edad,Tipo,Tipode,numero
