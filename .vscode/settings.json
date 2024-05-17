@@ -1,6 +1,12 @@
 {
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "iosfwd": "cpp",
+        "string": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "*.tcc": "cpp",
+        "fstream": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
