@@ -55,6 +55,7 @@ void leerDatosClientesTxt(queue<Categoria*>& categorias){
 void ordenamientoPorPrioridad(queue<Cliente*>& clientes,queue<Cliente*>& prioridades,queue<Cliente*>& auxiliar){
     int numeroMenor=0;
     queue<Cliente*>& auxiliar2;
+    queue<Cliente*>& clientesNormales;
     while (!clientes.empty()) {
         while (!auxiliar.empty()){
 
@@ -74,22 +75,29 @@ void ordenamientoPorPrioridad(queue<Cliente*>& clientes,queue<Cliente*>& priorid
 
                 }
             }
+            if(clientes.top()->getTipo()=="Normal"){
+                clientesNormales.push(clientes.top());
+
+            }
 
         }
         while (!clientes.empty()){
             if(clientes.top()->getNumero()==numeroMenor){
                  prioridades.push(clientes.top());
             }
+            clientes.pop();
         }
         while (!auxiliar2.empty()){
             auxiliar.push(auxiliar2.top());
+            clientes.push(auxiliar2.top());
             auxiliar2.pop();
         }
+        
     }
 }
 void mostrar(queue<Cliente*>& prioridades;){
     while (!prioridades.empty()){
-        cout << "Atendiendo a: " << cliente->getNumero() << endl;
+        cout << "Atendiendo al numero: " << cliente->getNumero() << endl;
 
     }
 
