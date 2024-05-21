@@ -6,6 +6,7 @@ ClientePreferencial::ClientePreferencial(string nombre,string edad,string tipo,s
     this-> edad=edad;
     this-> tipo=tipo;
     this-> numero=numero;
+    int NumeroPreferencia;
 
 };
 int Cliente::getNumero() {
@@ -14,3 +15,10 @@ int Cliente::getNumero() {
 string ClientePreferencial::getTipode(){//ver la prioridad si es 3ra edad,embarasada o discapacitado
     return this->prioridad;
 }
+int getNumeroPreferencia(){
+    return NumeroPreferencia;
+
+}
+void setNumeroPreferencia(int valor) {
+        NumeroPreferencia = valor;
+    }

@@ -1,8 +1,8 @@
 Medicamentos,Analgesicos,1500,25,1
-BCuidadoPersonal,Shampoo,1200,30,2
-BMedicamentos,Analgésicos,1500,40,3
-BCuidadoPersonal,Crema_Hidratante,3500,50,4
-BMedicamentos,Analgésicos,1500,60,5
+CuidadoPersonal,Shampoo,1200,30,2
+Medicamentos,Analgésicos,1500,40,3
+CuidadoPersonal,Crema_Hidratante,3500,50,4
+Medicamentos,Analgésicos,1500,60,5
 
 
 NombreCategoria,NombreSubCategoria,Precio,cantidad,Id
