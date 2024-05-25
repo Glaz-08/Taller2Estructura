@@ -14,4 +14,6 @@ public:
         string getTipo();
         ~Cliente();
         int getNumero();
+        void setNumero(int);
+        virtual string getTipode();
 };

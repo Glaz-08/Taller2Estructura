@@ -26,7 +26,7 @@ vector<string> split(const string& str, char delim) {
 }
 
 // Función para leer datos desde un archivo de texto y cargarlos en los vectores de clientes
-void leerDatosClientesTxt(queue<Cliente*>& clientesNormales,queue<Cliente*>& clientesPreferenciales,queue<Cliente*>& auxiliarPreferenciales,queue<Cliente*>& auxiliarNormales){
+void leerDatosClientesTxt(queue<Cliente*>& clientesNormales,queue<Cliente*>& clientesPreferenciales){
     string linea;
     ifstream archivo("Clientes.txt");  
     char delimitador = ',';
@@ -38,163 +38,137 @@ void leerDatosClientesTxt(queue<Cliente*>& clientesNormales,queue<Cliente*>& cli
         if(tipo=="Preferencial"){
             string tipoPrioridad=partes[3];
             int numero = stoi(partes[4]);
-            ClientePreferencial* clientePref = new ClientePreferencial(nombre,edad,tipo,tipoPrioridad,numero);
+            Cliente* clientePref = new ClientePreferencial(nombre,edad,tipo,tipoPrioridad,numero);
             if(clientePref->getTipode()=="Tercera edad"){
-                clientePref->setNumeroPreferencia(3);
+                //clientePref->setNumeroPreferencia(3);
                 //los tercera edad tendran un numero 3 para hacer una mejor comparacion
             }
             else if(clientePref->getTipode()=="Embarazada"){
-                clientePref->setNumeroPreferencia(1);
+                //clientePref->setNumeroPreferencia(1);
                 //las embarazadas tendran un numero 1 para hacer una mejor comparacion
             }
              else if(clientePref->getTipode()=="Discapacidad"){
-                clientePref->setNumeroPreferencia(2);
+                //clientePref->setNumeroPreferencia(2);
                 //discapacidad tendran un numero 2 para hacer una mejor comparacion
             }
             clientesPreferenciales.push(clientePref);
-            auxiliarPreferenciales.push(clientePref);
+            clientePref = nullptr;
+            delete(clientePref);
         }
         else{
             int numeroNorm = stoi(partes[3]);
-            ClienteNormal* clienteNorm = new ClienteNormal(nombre,edad,tipo,numeroNorm);
+            Cliente* clienteNorm = new ClienteNormal(nombre,edad,tipo,numeroNorm);
             clientesNormales.push(clienteNorm);
-            auxiliarNormales.push(clienteNorm);
+            clienteNorm = nullptr;
+            delete(clienteNorm);
         }
     }archivo.close();
 }
-// Función para leer datos desde un archivo de texto y cargarlos en los vectores de categorias
 
 //funcion para hacer el ordenamiento de la fila prioritaria y fila normanl
-queue<Cliente*> ordenamientoPorPrioridad(queue<Cliente*>& clientesNormales,queue<Cliente*>& ClientesPreferenciales,queue<Cliente*>& auxiliarPreferenciales,queue<Cliente*>& auxiliarNormales){
-    queue<Cliente*> prioridades;
-    int numeroMenorPreferenciales=0;
-    int numeroMenorNormales=0;
-    queue<Cliente*> auxiliarTerceraEdad;
-    queue<Cliente*> auxiliarTerceraEdadDos;
-    queue<Cliente*> auxiliarEmbarazada;
-    queue<Cliente*> auxiliarEmbarazadaDos;
-    queue<Cliente*> auxiliarDiscapacitado;
-    queue<Cliente*> auxiliarDiscapacitadoDos;
-    queue<Cliente*> auxiliarNormalesDos;
-    auxiliarPreferenciales.pop();
-    auxiliarNormales.pop();
+void ordenamientoPorPrioridad(queue<Cliente*>& clientesNormales, queue<Cliente*>& ClientesPreferenciales, queue<Cliente*>& clientesPreferencialesOrdenados){
+    queue<Cliente*> auxiliarTerceraEdad, auxiliarEmbarazada, auxiliarDiscapacitado;
+    
     //hacer ciclo para buscar el numero menor de cada tipo embarazada,discapacitado,tercera edad.
     while (!ClientesPreferenciales.empty()) {
-        if(ClientesPreferenciales.front()->getTipo()=="Tercera edad"){
+        if(ClientesPreferenciales.front()->getTipode()=="Tercera edad"){
             auxiliarTerceraEdad.push(ClientesPreferenciales.front());
             ClientesPreferenciales.pop();
         }
-       else if(ClientesPreferenciales.front()->getTipo()=="Embarazada"){
+       else if(ClientesPreferenciales.front()->getTipode()=="Embarazada"){
             auxiliarEmbarazada.push(ClientesPreferenciales.front());
             ClientesPreferenciales.pop();
         }
-        else if(ClientesPreferenciales.front()->getTipo()=="Discapacidad"){
+        else if(ClientesPreferenciales.front()->getTipode()=="Discapacidad"){
             auxiliarDiscapacitado.push(ClientesPreferenciales.front());
             ClientesPreferenciales.pop();
         }
-        else if(ClientesPreferenciales.front()->getTipo()=="Normal"){
-            clientesNormales.push(ClientesPreferenciales.front());
-            ClientesPreferenciales.pop();
-        }
     }
-    //para asi despues buscar al menor numero de cada tipo y meterlo a la cola de prioridades
-    std::vector<int> menoresTerceraEdad;
-    while (!auxiliarTerceraEdad.empty()){
-        menoresTerceraEdad.push_back(auxiliarTerceraEdad.front()->getNumero());
-        auxiliarTerceraEdadDos.push(auxiliarTerceraEdad.front());
+
+    //ordenar cola general de prioridades por tipo de prioridad de los clientes
+    int contador = 1;
+    Cliente* aux;
+    while(!auxiliarTerceraEdad.empty()) {
+        aux = auxiliarTerceraEdad.front();
+        aux->setNumero(contador);
+        clientesPreferencialesOrdenados.push(aux);
         auxiliarTerceraEdad.pop();
+        contador++;
     }
-    //rellene la lista con los valores de numeros ordenados, donde posteriormente la lleno denuevo para buscar los numeros
-    std::sort(menoresTerceraEdad.begin(), menoresTerceraEdad.end());//ordena los numeros de menor a mayor
-    for(int i=0;i<menoresTerceraEdad.size();i++){
-        while(!auxiliarTerceraEdadDos.empty()){
-            if(auxiliarTerceraEdadDos.front()->getNumero()==menoresTerceraEdad[i]){
-                prioridades.push(auxiliarTerceraEdadDos.front());
-                auxiliarTerceraEdadDos.pop();
-                break;
-            }
-
-        }
-    }
-    //se repite lo mismo pero con Discapacitados
-    std::vector<int> menoresDiscapacitados;
-    while (!auxiliarDiscapacitado.empty()){
-        menoresDiscapacitados.push_back(auxiliarDiscapacitado.front()->getNumero());
-        auxiliarDiscapacitadoDos.push(auxiliarDiscapacitado.front());
+    while(!auxiliarDiscapacitado.empty()) {
+        aux = auxiliarDiscapacitado.front();
+        aux->setNumero(contador);
+        clientesPreferencialesOrdenados.push(aux);
         auxiliarDiscapacitado.pop();
-    }//rellene la lista con los valores de numeros ordenados, donde posteriormente la lleno denuevo para buscar los numeros
-    std::sort(menoresDiscapacitados.begin(), menoresDiscapacitados.end());//ordena los numeros de menor a mayor
-    for(int i=0;i<menoresDiscapacitados.size();i++){
-        while(!auxiliarDiscapacitadoDos.empty()){
-            if(auxiliarDiscapacitadoDos.front()->getNumero()==menoresDiscapacitados[i]){
-                prioridades.push(auxiliarDiscapacitadoDos.front());
-                auxiliarDiscapacitadoDos.pop();
-                break;
-            }
-
-        }
+        contador++;
     }
-    //se repite con embarazadas
-    std::vector<int> menoresEmbarazadas;
-    while (!auxiliarEmbarazada.empty()){
-        menoresEmbarazadas.push_back(auxiliarEmbarazada.front()->getNumero());
-        auxiliarEmbarazadaDos.push(auxiliarEmbarazada.front());
+    while(!auxiliarEmbarazada.empty()) {
+        aux = auxiliarEmbarazada.front();
+        aux->setNumero(contador);
+        clientesPreferencialesOrdenados.push(aux);
         auxiliarEmbarazada.pop();
-    }//rellene la lista con los valores de numeros ordenados, donde posteriormente la lleno denuevo para buscar los numeros
-    std::sort(menoresEmbarazadas.begin(), menoresEmbarazadas.end());//ordena los numeros de menor a mayor
-    for(int i=0;i<menoresEmbarazadas.size();i++){
-        while(!auxiliarEmbarazadaDos.empty()){
-            if(auxiliarEmbarazadaDos.front()->getNumero()==menoresEmbarazadas[i]){
-                prioridades.push(auxiliarEmbarazadaDos.front());
-                auxiliarEmbarazadaDos.pop();
-                break;
-            }
-
-        }
+        contador++;
     }
-    //ahora con personasNormales
-    std::vector<int> menoresNormales;
-    while (!clientesNormales.empty()){
-        menoresNormales.push_back(clientesNormales.front()->getNumero());
-        auxiliarNormalesDos.push(clientesNormales.front());
+    while(!clientesNormales.empty()) {
+        aux = clientesNormales.front();
+        aux->setNumero(contador);
+        clientesPreferencialesOrdenados.push(aux);
         clientesNormales.pop();
-    }//rellene la lista con los valores de numeros ordenados, donde posteriormente la lleno denuevo para buscar los numeros
-    std::sort(menoresNormales.begin(), menoresNormales.end());//ordena los numeros de menor a mayor
-    for(int i=0;i<menoresNormales.size();i++){
-        while(!auxiliarNormalesDos.empty()){
-            if(auxiliarNormalesDos.front()->getNumero()==menoresNormales[i]){
-                prioridades.push(auxiliarNormalesDos.front());
-                auxiliarNormalesDos.pop();
+        contador++;
+    }
+    aux = nullptr;
+    delete(aux);
+}
+
+void mostrar(queue<Cliente*>& clientesPreferencialesOrdenados){
+    while (!clientesPreferencialesOrdenados.empty()){
+        cout << "Atendiendo al numero: " << clientesPreferencialesOrdenados.front()->getTipode()<<" "<< clientesPreferencialesOrdenados.front()->getNumero() << endl;
+        clientesPreferencialesOrdenados.pop();
+    }
+
+}
+
+void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferenciales, queue<Cliente*> clientesPreferencialesOrdenados) {
+    cout<<"--- Bienvenido/a al Menú ---"<<endl;
+    int opcion = 0;
+    do {
+        cout<<"1. Cargar clientes (y organizar números)"<<endl;
+        cout<<"2. Atender a siguiente cliente"<<endl;
+        cout<<"3. Ingresar cliente a cola"<<endl;
+        cout<<"4. Agregar producto a bodega"<<endl;
+        cout<<"5. Salir"<<endl;
+        cout<<"Seleccione una opción: "<<endl;
+        cin>>opcion;
+        switch(opcion) {
+            case 1:
+                leerDatosClientesTxt(clientesNormales,clientesPreferenciales);
+                ordenamientoPorPrioridad(clientesNormales,clientesPreferenciales,clientesPreferencialesOrdenados);
+                mostrar(clientesPreferencialesOrdenados);     
                 break;
-            }
-
+            case 2:
+                
+                break;
+            case 3:
+                
+                break;
+            case 4:
+                
+                break;
+            case 5:
+                cout<<"Saliendo..."<<endl;
+                break;
+            default:
+                cout<<"Opción incorrecta, por favor ingrese una opción válida"<<"\n"<<endl;
+                cin.clear();
+                cin.ignore();
         }
-        //ahora todo esta en orden en la cola llamada "prioridades"
-    }
-
-    return prioridades;
+    } while(opcion != 5);    
 }
-
-void mostrar(queue<Cliente*>& prioridades){
-    cout<<"asdads"<<endl;
-    while (!prioridades.empty()){
-        cout << "Atendiendo al numero: " << prioridades.front()->getNumero() << endl;
-        prioridades.pop();
-    }
-
-}
-
-
 
 int main(){
-    queue<Cliente*> clientesNormales;
-    queue<Cliente*> auxiliarNormales;
-    queue<Cliente*> clientesPreferenciales;
-    queue<Cliente*> auxiliarPreferenciales;
+    queue<Cliente*> clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados;
     queue<Categoria*> categorias;
-    leerDatosClientesTxt(clientesNormales,clientesPreferenciales,auxiliarPreferenciales,auxiliarNormales);
-    queue<Cliente*> prioridades = ordenamientoPorPrioridad(clientesNormales,clientesPreferenciales,auxiliarPreferenciales,auxiliarNormales);
-    mostrar(prioridades);
+    menu(clientesNormales,clientesPreferenciales,clientesPreferencialesOrdenados);
     
     return 0;
 }

@@ -8,7 +8,3 @@ ClienteNormal::ClienteNormal(string nombre,string edad,string tipo,int numero):C
     this-> numero=numero;
 
 };
-
-int Cliente::getNumero() {
-    return this-> numero;
-}

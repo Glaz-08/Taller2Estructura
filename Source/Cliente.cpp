@@ -16,4 +16,14 @@ string Cliente::getEdad() {
 string Cliente::getNombre() {
     return this-> nombre;
 }
+int Cliente::getNumero() {
+    return this->numero;
+}
+void Cliente::setNumero(int numero) {
+    this-> numero = numero;
+}
+string Cliente::getTipode(){//ver la prioridad si es 3ra edad, embarazada o discapacitado
+    return "";
+}
+
 

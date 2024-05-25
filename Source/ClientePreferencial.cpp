@@ -8,7 +8,7 @@ ClientePreferencial::ClientePreferencial(string nombre,string edad,string tipo,s
     this-> numero=numero;
 
 };
-string ClientePreferencial::getTipode(){//ver la prioridad si es 3ra edad,embarasada o discapacitado
+string ClientePreferencial::getTipode(){//ver la prioridad si es 3ra edad, embarazada o discapacitado
     return this->prioridad;
 }
 int ClientePreferencial::getNumeroPreferencia(){
