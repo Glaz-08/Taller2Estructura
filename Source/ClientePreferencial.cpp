@@ -1,24 +1,19 @@
 #include "ClientePreferencial.h"
 
-ClientePreferencial::ClientePreferencial(string nombre,string edad,string tipo,string prioridad,int numero):Cliente(nombre,edad,tipo){
-    this-> numero=numero;
+ClientePreferencial::ClientePreferencial(string nombre,string edad,string tipo,string prioridad,int numero):Cliente(nombre,edad,tipo),numeroPreferencia(0){
     this-> nombre=nombre;
     this-> edad=edad;
     this-> tipo=tipo;
+    this-> prioridad=prioridad;
     this-> numero=numero;
-    int NumeroPreferencia;
 
 };
-int Cliente::getNumero() {
-    return this-> numero;
-}
 string ClientePreferencial::getTipode(){//ver la prioridad si es 3ra edad,embarasada o discapacitado
     return this->prioridad;
 }
-int getNumeroPreferencia(){
-    return NumeroPreferencia;
-
+int ClientePreferencial::getNumeroPreferencia(){
+    return this->numeroPreferencia;
 }
-void setNumeroPreferencia(int valor) {
-        NumeroPreferencia = valor;
-    }
+void ClientePreferencial::setNumeroPreferencia(int valor) {
+        this->numeroPreferencia = valor;
+}

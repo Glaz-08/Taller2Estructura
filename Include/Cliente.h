@@ -8,7 +8,6 @@ protected:
     int numero;
 
 public:
-    
     Cliente(string nombre,string edad, string tipo) ;
         string getNombre();
         string getEdad();

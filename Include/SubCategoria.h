@@ -10,4 +10,4 @@ class SubCategoria:public Categoria{
         int getPrecio();
         int getCantidad();
         int getId();
-}
+};

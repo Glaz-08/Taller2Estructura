@@ -4,11 +4,13 @@
 using namespace std;
 
 class ClientePreferencial: public Cliente{
+    private:
+        string prioridad;
+        int numeroPreferencia;
     public:
-        ClientePreferencial(string,string,string,string tipode,int);
-        int getNumero();
+        ClientePreferencial(string nombre,string edad,string tipo,string prioridad,int numero);
         int getNumeroPreferencia();
-        int setNumeroPreferencia(int);
+        void setNumeroPreferencia(int);
         string getTipode();
    
 
