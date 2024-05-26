@@ -2,7 +2,8 @@ Medicamentos,Analgesicos,1500,25,1
 CuidadoPersonal,Shampoo,1200,30,2
 Medicamentos,Analgésicos,1500,40,3
 CuidadoPersonal,Crema_Hidratante,3500,50,4
-Medicamentos,Analgésicos,1500,60,5
+Medicamentos,Paracetamol,1500,60,5
+Medicamentos,Aspirina,1700,73,6
 
 
 NombreCategoria,NombreSubCategoria,Precio,cantidad,Id
