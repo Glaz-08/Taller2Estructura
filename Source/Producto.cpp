@@ -23,5 +23,5 @@ int Producto::getId(){
     return this-> id;
 }
 void Producto::setCantidad(int numero){
-    this-> cantidad=-numero;
+    this-> cantidad=numero;
 }

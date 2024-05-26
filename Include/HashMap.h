@@ -17,7 +17,9 @@ private:
     int tamanoTabla;
     double factorCargaMaxima;
     std::vector<Nodo*> tabla;
-
-    int funcionHash(int clave);
+    int funcionHash(int clave)
+        {
+            return clave % tamanoTabla;
+        }
     void rehash();
 };

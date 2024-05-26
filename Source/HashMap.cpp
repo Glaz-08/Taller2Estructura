@@ -118,8 +118,7 @@ int HashMap::AsignarID(){
         Nodo* actual = tabla[i];
         while (actual != nullptr) {
             if(actual->siguiente==nullptr){
-                Producto* producto = actual->valor;
-                return producto->getId()+1;
+                return actual->valor->getId()+1;
             }
         }
     }
