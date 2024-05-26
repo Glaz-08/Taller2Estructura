@@ -13,18 +13,18 @@ void HashMap::rehash() {
     for (int i = 0; i < tamanoTabla; i++) {
         Nodo* actual = tabla[i];
         while (actual != nullptr) {
-            int índice = funcionHash(actual->clave) % nuevoTamanoTabla;
+            int indice = funcionHash(actual->clave) % nuevoTamanoTabla;
             Nodo* nuevoNodo = new Nodo(actual->clave, actual->valor);
 
             Nodo* anterior = nullptr;
-            Nodo* siguiente = nuevaTabla[índice];
+            Nodo* siguiente = nuevaTabla[indice];
             while (siguiente != nullptr && siguiente->clave > actual->clave) { 
                 anterior = siguiente;
                 siguiente = siguiente->siguiente;
             }
 
             if (anterior == nullptr) { 
-                nuevaTabla[índice] = nuevoNodo;
+                nuevaTabla[indice] = nuevoNodo;
             } else {
                 anterior->siguiente = nuevoNodo;
             }
@@ -45,14 +45,14 @@ HashMap::HashMap(double factorCargaMaxima) {
 }
 
 void HashMap::insertar(int clave, Producto* valor) {
-    int índice = funcionHash(clave);
+    int indice = funcionHash(clave);
     Nodo* nuevoNodo = new Nodo(clave, valor);
 
-    if (tabla[índice] == nullptr) {
-        tabla[índice] = nuevoNodo;
+    if (tabla[indice] == nullptr) {
+        tabla[indice] = nuevoNodo;
     } else {
         Nodo* previo = nullptr;
-        Nodo* actual = tabla[índice];
+        Nodo* actual = tabla[indice];
         while (actual != nullptr) {
             previo = actual;
             actual = actual->siguiente;
@@ -68,8 +68,8 @@ void HashMap::insertar(int clave, Producto* valor) {
 }
 
 Producto* HashMap::obtener(int clave) {
-    int índice = funcionHash(clave);
-    Nodo* actual = tabla[índice];
+    int indice = funcionHash(clave);
+    Nodo* actual = tabla[indice];
 
     while (actual != nullptr) {
         if (actual->clave == clave) {
@@ -82,14 +82,14 @@ Producto* HashMap::obtener(int clave) {
 }
 
 void HashMap::borrar(int clave) {
-    int índice = funcionHash(clave);
+    int indice = funcionHash(clave);
     Nodo* previo = nullptr;
-    Nodo* actual = tabla[índice];
+    Nodo* actual = tabla[indice];
 
     while (actual != nullptr) {
         if (actual->clave == clave) {
             if (previo == nullptr) {
-                tabla[índice] = actual->siguiente;
+                tabla[indice] = actual->siguiente;
             } else {
                 previo->siguiente = actual->siguiente;
             }

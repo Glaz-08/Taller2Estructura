@@ -24,7 +24,34 @@ vector<string> split(const string& str, char delim) {
 
     return tokens;
 }
+//encuentra el numero mayor del stack
+int encontrarMayor(queue<Cliente*> clientesPreferenciales) {
+    int mayor = clientesPreferenciales.front()->getNumero();
+    clientesPreferenciales.pop();
+    
+    // Recorremos la cola para encontrar el número mayor
+    while (!clientesPreferenciales.empty()) {
+        if (clientesPreferenciales.front()->getNumero()> mayor) {
+            mayor = clientesPreferenciales.front()->getNumero();
+        }
+        clientesPreferenciales.pop();
+    }
+    
+    return mayor;
+}
+//funcion para buscar el numero mayor del stack de clientes y sumarle 1 para que asi sea el numero mas reciente en llegar
+//por lo que seria el ultimo en atenderse, pero eso depende de su preferencialidad
+int darNumeroPreferencial(queue<Cliente*> clientesPreferenciales){
 
+    return encontrarMayor(clientesPreferenciales)+1;
+
+}
+//funcion que convierte los textos a minusculas
+void toLowerCase(std::string& texto) {
+    std::transform(texto.begin(), texto.end(), texto.begin(), [](unsigned char c) {
+        return std::tolower(c);
+    });
+}
 // Función para leer datos desde un archivo de texto y cargarlos en los vectores de clientes
 void leerDatosClientesTxt(queue<Cliente*>& clientesNormales,queue<Cliente*>& clientesPreferenciales){
     string linea;
@@ -127,6 +154,62 @@ void mostrar(queue<Cliente*>& clientesPreferencialesOrdenados){
     }
 
 }
+//control de error para cuando vayan a crear a una persona por su tipo de preferencialidad
+void controlDeError(string nombreCliente,string edad,queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencialesOrdenados){
+    int opcion=0;
+    int numero=0;
+    string preferencialidad;
+    std::string texto;
+    string tipoDeDiscapacidad;
+    do{
+        cout<<"Ingrese alguno de los valores a continuacion:"<<endl;
+        cout<<"1) si es Preferencial "<<endl;
+        cout<<"2) si es Normal "<<endl;
+        cin>>preferencialidad;
+        texto=preferencialidad;
+        toLowerCase(texto);//lo convierto a minusculas para comparar mejor
+        cin>>opcion;
+        switch(opcion) {
+            case 1:
+                cout<<"ingrese el tipo de Preferencialidad: Embarazada,Discapacidad,Tercera edad "<<endl;
+                cout<<"escribalo tal cual como sale: Embarazada / Discapacidad / Tercera edad "<<endl;
+                cin>>tipoDeDiscapacidad;
+                numero = darNumeroPreferencial(clientesPreferencialesOrdenados);
+                Cliente* clientePref = new ClientePreferencial(nombreCliente,edad,preferencialidad,tipoDeDiscapacidad,numero);
+                opcion=3;
+                break;
+            case 2:
+                numero = darNumeroPreferencial(clientesPreferencialesOrdenados);
+                Cliente* clienteNorm = new ClienteNormal(nombreCliente,edad,preferencialidad,numero);
+                opcion=3;
+                break;
+            default:
+                cout<<"Opción incorrecta, por favor ingrese una opción válida"<<"\n"<<endl;
+                cin.clear();
+                cin.ignore();
+        }
+    }while(opcion != 3); 
+
+}
+//metodo para leer el archivo txt de productos y crear el objeto productos y almacenarlo en el hashmap
+void leerDatosProductosTxt(){
+    string linea;
+    ifstream archivo("Productos.txt");  
+    char delimitador = ',';
+    while(getline(archivo,linea)) {
+        vector<string> partes = split(linea, delimitador); 
+        string nombreCategoria= partes[0];
+        string nombreSubCategoria= partes[1];
+        int precio=stoi(partes[2]);
+        int cantidad=stoi(partes[3]);
+        int id=stoi(partes[4]);
+        Producto* produc= new Producto(nombreCategoria,nombreSubCategoria,precio,cantidad,id);
+        bodega->insertar(id,produc);
+
+
+    }archivo.close();
+
+}
 //funcion que despliega el menu y da opciones para otros metodos
 void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferenciales, queue<Cliente*> clientesPreferencialesOrdenados) {
     cout<<"--- Bienvenido/a al Menú ---"<<endl;
@@ -156,7 +239,7 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
                 break;
             case 2:
                 bodega->MostrarProductos();
-                cout<<"Ingrese la id del producto que desea comprar"<<endl;
+                cout<<" Ingrese la id del producto que desea comprar"<<endl;
                 cin>>id;
                 cout<<"El producto es:"<<bodega->obtener(id)->getNombre()<<"su precio es:"<<bodega->obtener(id)->getPrecio()<<endl;
                 cout<<"ingese la cantidad que desea comprar"<<endl;
@@ -214,91 +297,6 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
         }
     } while(opcion != 5);    
 }
-//control de error para cuando vayan a crear a una persona por su tipo de preferencialidad
-void controlDeError(string nombreCliente,string edad,queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencialesOrdenados){
-    int opcion=0;
-    string preferencialidad;
-    std::string texto;
-    string tipoDeDiscapacidad;
-    do{
-        cout<<"Ingrese alguno de los valores a continuacion:"<<endl;
-        cout<<"1) si es Preferencial "<<endl;
-        cout<<"2) si es Normal "<<endl;
-        cin>>preferencialidad;
-        texto=preferencialidad;
-        toLowerCase(texto);//lo convierto a minusculas para comparar mejor
-        cin>>opcion;
-        switch(opcion) {
-            case 1:
-                cout<<"ingrese el tipo de Preferencialidad: Embarazada,Discapacidad,Tercera edad "<<endl;
-                cout<<"escribalo tal cual como sale: Embarazada / Discapacidad / Tercera edad "<<endl;
-                cin>>tipoDeDiscapacidad;
-                int numero = darNumeroPreferencial(clientesPreferencialesOrdenados);
-                Cliente* clientePref = new ClientePreferencial(nombreCliente,edad,preferencialidad,tipoDeDiscapacidad,numero);
-                opcion=3;
-                break;
-            case 2:
-                 int numero = darNumeroPreferencial(clientesPreferencialesOrdenados);
-                Cliente* clienteNorm = new ClienteNormal(nombreCliente,edad,preferencialidad,numero);
-                opcion=3;
-                break;
-            default:
-                cout<<"Opción incorrecta, por favor ingrese una opción válida"<<"\n"<<endl;
-                cin.clear();
-                cin.ignore();
-        }
-    }while(opcion != 3); 
-
-}
-//funcion para buscar el numero mayor del stack de clientes y sumarle 1 para que asi sea el numero mas reciente en llegar
-//por lo que seria el ultimo en atenderse, pero eso depende de su preferencialidad
-int darNumeroPreferencial(queue<Cliente*> clientesPreferenciales){
-
-    return encontrarMayor(clientesPreferenciales)+1;
-
-}
-//encuentra el numero mayor del stack
-int encontrarMayor(queue<Cliente*> clientesPreferenciales) {
-    int mayor = clientesPreferenciales.front()->getNumero();
-    clientesPreferenciales.pop();
-    
-    // Recorremos la cola para encontrar el número mayor
-    while (!clientesPreferenciales.empty()) {
-        if (clientesPreferenciales.front()->getNumero()> mayor) {
-            mayor = clientesPreferenciales.front()->getNumero();
-        }
-        clientesPreferenciales.pop();
-    }
-    
-    return mayor;
-}
-//funcion que convierte los textos a minusculas
-void toLowerCase(std::string& texto) {
-    std::transform(texto.begin(), texto.end(), texto.begin(), [](unsigned char c) {
-        return std::tolower(c);
-    });
-}
-
-//metodo para leer el archivo txt de productos y crear el objeto productos y almacenarlo en el hashmap
-void leerDatosProductosTxt(){
-    string linea;
-    ifstream archivo("Productos.txt");  
-    char delimitador = ',';
-    while(getline(archivo,linea)) {
-        vector<string> partes = split(linea, delimitador); 
-        string nombreCategoria= partes[0];
-        string nombreSubCategoria= partes[1];
-        int precio=stoi(partes[2]);
-        int cantidad=stoi(partes[3]);
-        int id=stoi(partes[4]);
-        Producto* produc= new Producto(nombreCategoria,nombreSubCategoria,precio,cantidad,id);
-        bodega->insertar(id,produc);
-
-
-    }archivo.close();
-
-}
-
 int main(){
     queue<Cliente*> clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados;
     leerDatosProductosTxt();
