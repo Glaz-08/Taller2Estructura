@@ -119,11 +119,23 @@ void ordenamientoPorPrioridad(queue<Cliente*>& clientesNormales, queue<Cliente*>
 }
 
 // Muestra los clientes ordenados por prioridad
-void mostrar(queue<Cliente*>& clientesPreferencialesOrdenados) {
+void mostrar(queue<Cliente*>& clientesNormales,queue<Cliente*>& clientesPreferenciales,queue<Cliente*>& clientesPreferencialesOrdenados) {
     while (!clientesPreferencialesOrdenados.empty()) {
-        cout << "Atendiendo al numero: " << clientesPreferencialesOrdenados.front()->getTipode() << " " << clientesPreferencialesOrdenados.front()->getNumero() << endl;
-        clientesPreferencialesOrdenados.pop();
+        
+            if (clientesPreferencialesOrdenados.front()->getTipo() =="Normal") {
+                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << "Es un cliente " << clientesPreferencialesOrdenados.front()->getTipo() << endl;
+                cout << "Su numero es el: " << clientesPreferencialesOrdenados.front()->getNumero()<< endl;
+                clientesPreferencialesOrdenados.pop();
+            }
+            else{
+                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << "Es un cliente" << clientesPreferencialesOrdenados.front()->getTipo() << endl;
+                cout << "Su discapacidad es: " << clientesPreferencialesOrdenados.front()->getTipode() << endl;
+                cout << "Su numero es el: " << clientesPreferencialesOrdenados.front()->getNumero()<< endl;
+                clientesPreferencialesOrdenados.pop();
+            }
     }
+    leerDatosClientesTxt(clientesNormales, clientesPreferenciales);
+    ordenamientoPorPrioridad(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
 }
 
 // Control de error para la creación de clientes
@@ -193,6 +205,54 @@ void leerDatosProductosTxt() {
     }
     archivo.close();
 }
+//metodo para repetir parte del menu de compra,por si quieren comprar denuevo
+void comprarDeNuevo(queue<Cliente*> clientesPreferencialesOrdenados){
+    int id;
+    int cantidadDeCompra;
+    int opcionDeRepetirCompra;
+    bodega->MostrarProductos();
+    cout << "Ingrese la id del producto que desea comprar" << endl;
+    cin >> id;
+    cout << "El producto es: " << bodega->obtener(id)->getNombre() << " su precio es: " << bodega->obtener(id)->getPrecio() << endl;
+    cout << "Ingrese la cantidad que desea comprar" << endl;
+    cin >> cantidadDeCompra;
+    if (bodega->obtener(id)->getCantidad() == 0) {
+        cout << "No hay más unidades" << endl;
+        
+    } else if (bodega->obtener(id)->getCantidad() < cantidadDeCompra) {
+        cout << "¡Compraste todas las unidades que quedaban!" << endl;
+        int boleta = bodega->obtener(id)->getCantidad() * bodega->obtener(id)->getPrecio();
+        cout << "Total a pagar: " << boleta << endl;
+        bodega->obtener(id)->setCantidad(0);
+        cout << "¿Deseas comprar otra cosa?" << endl;
+        cout << "1) SI, ingrese el numero 1" << endl;
+        cout << "2) No, ingrese el numero 2" << endl;
+        cin>>opcionDeRepetirCompra;
+        if(opcionDeRepetirCompra==1){
+            comprarDeNuevo(clientesPreferencialesOrdenados);
+            }
+        else if(opcionDeRepetirCompra==2){
+            clientesPreferencialesOrdenados.pop();
+        }
+    } else {
+        cout << "¡Compra realizada!" << endl;
+        int boleta = cantidadDeCompra * bodega->obtener(id)->getPrecio();
+        cout << "Total a pagar: " << boleta << endl;
+        bodega->obtener(id)->setCantidad(bodega->obtener(id)->getCantidad() - cantidadDeCompra);
+        cout << "¿Deseas comprar otra cosa?" << endl;
+        cout << "1) SI, ingrese el numero 1" << endl;
+        cout << "2) No, ingrese el numero 2" << endl;
+        cin>>opcionDeRepetirCompra;
+        if(opcionDeRepetirCompra==1){
+            comprarDeNuevo(clientesPreferencialesOrdenados);
+        }
+        else if(opcionDeRepetirCompra==2){
+            clientesPreferencialesOrdenados.pop();
+        }
+        
+    }
+
+}
 
 
 
@@ -205,12 +265,14 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
     int precio;
     int cantidad;
     int id = 0; 
+    int opcionDeRepetirCompra;
     Producto* pro = nullptr; 
     int cantidadDeCompra;
     string nombreCliente;
     string edad;
     string preferencialidad;
-
+    leerDatosClientesTxt(clientesNormales, clientesPreferenciales);
+    ordenamientoPorPrioridad(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
     do {
         cout << "1. Cargar clientes (y organizar números)" << endl;
         cout << "2. Atender a siguiente cliente" << endl;
@@ -222,30 +284,66 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
 
         switch (opcion) {
             case 1:
-                leerDatosClientesTxt(clientesNormales, clientesPreferenciales);
-                ordenamientoPorPrioridad(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
-                mostrar(clientesPreferencialesOrdenados);
+                mostrar(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
                 break;
-            case 2: // LEER LA COLA PARA QUE LA ATENCIÓN DE CLIENTES NO SEA INFINITA
-                bodega->MostrarProductos();
-                cout << "Ingrese la id del producto que desea comprar" << endl;
-                cin >> id;
-                cout << "El producto es: " << bodega->obtener(id)->getNombre() << " su precio es: " << bodega->obtener(id)->getPrecio() << endl;
-                cout << "Ingrese la cantidad que desea comprar" << endl;
-                cin >> cantidadDeCompra;
-                if (bodega->obtener(id)->getCantidad() == 0) {
-                    cout << "No hay más unidades" << endl;
-                    break;
-                } else if (bodega->obtener(id)->getCantidad() < cantidadDeCompra) {
-                    cout << "¡Compraste todas las unidades que quedaban!" << endl;
-                    int boleta = bodega->obtener(id)->getCantidad() * bodega->obtener(id)->getPrecio();
-                    cout << "Total a pagar: " << boleta << endl;
-                    bodega->obtener(id)->setCantidad(0);
-                } else {
-                    cout << "¡Compra realizada!" << endl;
-                    int boleta = cantidadDeCompra * bodega->obtener(id)->getPrecio();
-                    cout << "Total a pagar: " << boleta << endl;
-                    bodega->obtener(id)->setCantidad(bodega->obtener(id)->getCantidad() - cantidadDeCompra);
+            case 2:
+                while(!clientesPreferencialesOrdenados.empty()){
+                    cout << "estamos atendiendo a "<<clientesPreferencialesOrdenados.front()->getNombre()<<"es un cliente:"<<clientesPreferencialesOrdenados.front()->getTipo()<< endl;
+                    bodega->MostrarProductos();
+                    cout << "Ingrese la id del producto que desea comprar" << endl;
+                    cin >> id;
+                    cout << "El producto es: " << bodega->obtener(id)->getNombre() << " su precio es: " << bodega->obtener(id)->getPrecio() << endl;
+                    cout << "Ingrese la cantidad que desea comprar" << endl;
+                    cin >> cantidadDeCompra;
+                    if (bodega->obtener(id)->getCantidad() == 0) {
+                        cout << "No hay más unidades" << endl;
+                        break;
+                    } else if (bodega->obtener(id)->getCantidad() < cantidadDeCompra) {
+                        cout << "¡Compraste todas las unidades que quedaban!" << endl;
+                        int boleta = bodega->obtener(id)->getCantidad() * bodega->obtener(id)->getPrecio();
+                        cout << "Total a pagar: " << boleta << endl;
+                        bodega->obtener(id)->setCantidad(0);
+                        cout << "¿Deseas comprar otra cosa?" << endl;
+                        cout << "1) SI, ingrese el numero 1" << endl;
+                        cout << "2) No, ingrese el numero 2" << endl;
+                        cin>>opcionDeRepetirCompra;
+                        if(opcionDeRepetirCompra==1){
+                            comprarDeNuevo(clientesPreferencialesOrdenados);
+                        }
+                        else if(opcionDeRepetirCompra==2){
+                            clientesPreferencialesOrdenados.pop();
+                        }
+                        break;
+                    } else {
+                        cout << "¡Compra realizada!" << endl;
+                        int boleta = cantidadDeCompra * bodega->obtener(id)->getPrecio();
+                        cout << "Total a pagar: " << boleta << endl;
+                        bodega->obtener(id)->setCantidad(bodega->obtener(id)->getCantidad() - cantidadDeCompra);
+                        cout << "¿Deseas comprar otra cosa?" << endl;
+                        cout << "1) SI, ingrese el numero 1" << endl;
+                        cout << "2) No, ingrese el numero 2" << endl;
+                        cin>>opcionDeRepetirCompra;
+                        if(opcionDeRepetirCompra==1){
+                            comprarDeNuevo(clientesPreferencialesOrdenados);
+                        }
+                        else if(opcionDeRepetirCompra==2){
+                            clientesPreferencialesOrdenados.pop();
+                        }
+                        break;
+                    }   
+                }//fin while que atiende clientes
+                if(clientesPreferencialesOrdenados.empty()){
+                    cout << "¡¡ya no quedan mas clientes por atender!!" << endl;
+                    cout << "¿Deseas cerrar el programa?" << endl;
+                    cout << "1) SI, ingrese el numero 1" << endl;
+                    cout << "2) No, ingrese el numero 2" << endl;
+                    cin>>opcionDeRepetirCompra;
+                    if(opcionDeRepetirCompra==1){
+                        opcion=5;
+                    }
+                    else if(opcionDeRepetirCompra==2){
+                        cout << "OK,no habran mas clientes..." << endl;
+                    }
                 }
                 break;
             case 3:
@@ -264,7 +362,7 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
                 cin >> precio;
                 cout << "Ingrese la cantidad que hay en la bodega" << endl;
                 cin >> cantidad;
-                id = bodega->AsignarID(); // ARREGLAR EL ID DEL PRODUCTO
+                id = bodega->AsignarID();
                 pro = new Producto(nombre, nombreSub, precio, cantidad, id);
                 bodega->insertar(id, pro);
                 break;

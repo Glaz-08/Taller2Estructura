@@ -112,17 +112,19 @@ int HashMap::getNumeroElementos() {
     }
     return contador;
 }
-//recorre el hashmap y retorna una id que no exista
-int HashMap::AsignarID(){
+//recorre el hashmap buscando el mayor id y retornamos ese id + 1
+int HashMap::AsignarID() {
+    int mayorID = -1;  
     for (int i = 0; i < tamanoTabla; ++i) {
         Nodo* actual = tabla[i];
         while (actual != nullptr) {
-            if(actual->siguiente==nullptr){
-                return actual->valor->getId()+1;
+            if (actual->valor->getId() > mayorID) {
+                mayorID = actual->valor->getId();
             }
+            actual = actual->siguiente;
         }
     }
-    return 0;
+    return mayorID + 1; 
 }
 //recorre el hashmap y muestra los productos
 void HashMap::MostrarProductos(){
