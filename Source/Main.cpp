@@ -123,23 +123,21 @@ void mostrar(queue<Cliente*>& clientesNormales,queue<Cliente*>& clientesPreferen
     while (!clientesPreferencialesOrdenados.empty()) {
         
             if (clientesPreferencialesOrdenados.front()->getTipo() =="Normal") {
-                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << "Es un cliente " << clientesPreferencialesOrdenados.front()->getTipo() << endl;
+                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << " Es un cliente " << clientesPreferencialesOrdenados.front()->getTipo() << endl;
                 cout << "Su numero es el: " << clientesPreferencialesOrdenados.front()->getNumero()<< endl;
                 clientesPreferencialesOrdenados.pop();
             }
             else{
-                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << "Es un cliente" << clientesPreferencialesOrdenados.front()->getTipo() << endl;
+                cout << "Atendiendo a " << clientesPreferencialesOrdenados.front()->getNombre() << " Es un cliente" << clientesPreferencialesOrdenados.front()->getTipo() << endl;
                 cout << "Su discapacidad es: " << clientesPreferencialesOrdenados.front()->getTipode() << endl;
                 cout << "Su numero es el: " << clientesPreferencialesOrdenados.front()->getNumero()<< endl;
                 clientesPreferencialesOrdenados.pop();
             }
     }
-    leerDatosClientesTxt(clientesNormales, clientesPreferenciales);
-    ordenamientoPorPrioridad(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
 }
 
 // Control de error para la creación de clientes
-void controlDeError(string nombreCliente, string edad, queue<Cliente*>& clientesNormales, queue<Cliente*>& clientesPreferencialesOrdenados) {
+void controlDeError(string nombreCliente, string edad, queue<Cliente*>& clientesNormales, queue<Cliente*>& clientesPreferencialesOrdenados,queue<Cliente*>& clientesPreferenciales) {
     int opcion = 0;
     int numero = 0;
     string tipoDeDiscapacidad;
@@ -157,14 +155,16 @@ void controlDeError(string nombreCliente, string edad, queue<Cliente*>& clientes
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiar el buffer de entrada
+
         switch (opcion) {
             case 1:
                 cout << "Ingrese el tipo de Preferencialidad: Embarazada, Discapacidad, Tercera edad" << endl;
                 cout << "Escríbalo tal cual como sale: Embarazada / Discapacidad / Tercera edad" << endl;
-                cin >> tipoDeDiscapacidad;
+                getline(cin, tipoDeDiscapacidad);
                 numero = darNumeroPreferencial(clientesPreferencialesOrdenados);
                 clientePref = new ClientePreferencial(nombreCliente, edad, "Preferencial", tipoDeDiscapacidad, numero);
-                clientesPreferencialesOrdenados.push(clientePref);
+                clientesPreferenciales.push(clientePref);
                 opcion = 3;
                 break;
             case 2:
@@ -179,10 +179,9 @@ void controlDeError(string nombreCliente, string edad, queue<Cliente*>& clientes
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
     } while (opcion != 3);
+    leerDatosClientesTxt(clientesNormales, clientesPreferenciales);
+    ordenamientoPorPrioridad(clientesNormales, clientesPreferenciales, clientesPreferencialesOrdenados);
 }
-
-
-
 
 // Lee datos de productos desde un archivo de texto
 void leerDatosProductosTxt() {
@@ -351,7 +350,7 @@ void menu(queue<Cliente*> clientesNormales, queue<Cliente*> clientesPreferencial
                 cin >> nombreCliente;
                 cout << "Ingrese su edad" << endl;
                 cin >> edad;
-                controlDeError(nombreCliente, edad, clientesNormales, clientesPreferencialesOrdenados);
+                controlDeError(nombreCliente, edad, clientesNormales, clientesPreferencialesOrdenados, clientesPreferenciales);
                 break;
             case 4:
                 cout << "Ingrese el nombre del producto" << endl;
