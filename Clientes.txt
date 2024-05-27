@@ -2,3 +2,10 @@ juan,20,Normal,1
 martin,63,Preferencial,Tercera edad,2
 luisa,24,Preferencial,Embarazada,3
 pedro,25,Preferencial,Discapacidad,4
+marta,43,Normal,5
+javier,90,Preferencial,Tercera edad,6
+pablo,23,Preferencial,Discapacidad,7
+gian,43,Normal,8
+fernanda,20,Preferencial,Embarazada,9
+hugo,34,Normal,10
+fernando,19,Preferencial,Discapacidad,11
